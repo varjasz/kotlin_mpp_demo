@@ -13,8 +13,14 @@ import io.ktor.serialization.*
 import kotlinx.html.*
 import org.slf4j.event.Level
 
+/**
+ * Server entry point
+ */
 fun main() {
 
+    /**
+     * Configure and start Ktor
+     */
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
         install(DefaultHeaders)
         install(Compression)
@@ -26,6 +32,7 @@ fun main() {
             json()
         }
         routing {
+            // Start page
             get("/") {
                 call.respondHtml {
                     head {
@@ -38,11 +45,13 @@ fun main() {
                     }
                 }
             }
+            // Server side REST API to query vehicles
             get("/vehicles") {
                 call.respond(
                     createResponse(call.parameters["make"], call.parameters["type"] )
                 )
             }
+            // Client side js (generated from Kotlin)
             static("/static") {
                 resource("output.js")
             }
@@ -50,6 +59,9 @@ fun main() {
     }.start()
 }
 
+/**
+ * Dumb result list. Filtered by make and type.
+ */
 fun createResponse(make: String?, type: String?): List<Vehicle> {
     return listOf(
         Vehicle(registrationNumber = "ABC123", vinNumber = "AL3453XCVBC", make = "OPEL", type = "ASTRA"),

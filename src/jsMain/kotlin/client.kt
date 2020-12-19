@@ -16,6 +16,9 @@ import kotlinx.browser.document
 import kotlin.coroutines.CoroutineContext
 import kotlinx.dom.clear
 
+/**
+ * Client entry point
+ */
 fun main() {
     VehiclePage.init()
 }
@@ -28,6 +31,9 @@ object VehiclePage : CoroutineScope {
         }
     }
 
+    /**
+     * Using coroutines to execute async http requests
+     */
     override val coroutineContext: CoroutineContext by lazy { Job() }
 
     private val mainDiv by lazy { document.getElementById("mainDiv")!! }
@@ -35,6 +41,9 @@ object VehiclePage : CoroutineScope {
     private val vehicleMake by lazy { document.getElementById("vehicleMake") as HTMLInputElement }
     private val vehicleType by lazy { document.getElementById("vehicleType") as HTMLInputElement }
 
+    /**
+     * Create the initial client page
+     */
     fun init() {
         mainDiv.append {
             style { +"div {margin: 10px; padding:10px;}" }
@@ -71,6 +80,9 @@ object VehiclePage : CoroutineScope {
         showResult(listOf())
     }
 
+    /**
+     * Show the results in html table
+     */
     private fun showResult(vehicleList: List<Vehicle>) {
         resultDiv.clear()
         resultDiv.append {
@@ -99,6 +111,9 @@ object VehiclePage : CoroutineScope {
         }
     }
 
+    /**
+     * Make a http request to query the vehicles
+     */
     private suspend fun search(make: String?, type: String?): List<Vehicle> {
         return httpClient.get("http://127.0.0.1:8080/vehicles") {
             parameter("make", make?.toUpperCase())
